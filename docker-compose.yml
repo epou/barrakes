@@ -3,6 +3,7 @@ version: '3.7'
 services:
   db:
     image: postgres:12.0-alpine
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file:
@@ -23,16 +24,17 @@ services:
     expose:
       - 8000
     volumes:
-      - staticfiles:/opt/app/staticfiles
+      - staticfiles:/opt/app/barrakes/staticfiles
     depends_on:
       - db
 
   nginx:
     build: ./nginx
+    restart: always
     ports:
       - 666:80
     volumes:
-      - staticfiles:/opt/app/staticfiles
+      - staticfiles:/opt/app/barrakes/staticfiles
     depends_on:
       - web
 

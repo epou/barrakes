@@ -38,9 +38,6 @@ RUN addgroup -S app && adduser -S app -G app
 # create the appropriate directories
 WORKDIR $APP_HOME
 
-# Create staticfiles folder
-RUN mkdir $APP_HOME/staticfiles
-
 # install dependencies
 RUN apk update && apk add libpq
 COPY --from=builder /usr/src/app/wheels /wheels
