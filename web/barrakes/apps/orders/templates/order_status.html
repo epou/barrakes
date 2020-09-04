@@ -31,7 +31,9 @@
     }
     autoloader();
     setInterval(function (){
-        autoloader()
+        if (document.hidden === false) {
+            autoloader();
+        }
     }, 5000)
 
 {% endblock %}

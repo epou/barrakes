@@ -95,5 +95,7 @@
     }
     autoloader();
     setInterval(function (){
-        autoloader()
+        if (document.hidden === false) {
+            autoloader();
+        }
     }, 10000)
