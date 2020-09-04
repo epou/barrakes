@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% load render_table from django_tables2 %} {% load static %}
+
+{% block content %}
+            <!-- ============================================================== -->
+            <!-- Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <div class="page-breadcrumb">
+                <div class="row">
+                    <div class="col-12 d-flex no-block align-items-center">
+                        <h4 class="page-title">Homepage</h4>
+                        <div class="ml-auto text-right">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">Inici</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+
+                <div class="row">
+                     <!-- Column -->
+                    <div class="col-md-6 col-lg-6">
+                        <div class="card">
+                            <div class="box bg-success text-center">
+                                <h5 class="text-white">Comandes acabades</h5>
+                                <h1 id="num_finished_orders" class="font-light text-white">{{ num_finished_orders }}</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <div class="card">
+                            <div class="box bg-warning text-center">
+                                <h5 class="text-white">Comandes pendents</h5>
+                                <h1 id="num_pending_orders" class="font-light text-white">{{ num_pending_orders }}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                         <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Últimes comandes</h4>
+                            </div>
+                            {% include './include/order_container.html' %}
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+{%  endblock %}
+
+{% block extra_js %}
+    {% include './include/order_container.js' with only_pending='true' inverse_order='false' %}
+{% endblock %}

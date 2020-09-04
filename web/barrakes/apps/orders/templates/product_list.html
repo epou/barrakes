@@ -1,0 +1,70 @@
+{% extends 'base.html' %} {% load render_table from django_tables2 %} {% load static %}
+
+{% block content %}
+        <div class="page-breadcrumb">
+            <div class="row">
+                <div class="col d-flex no-block align-items-center">
+                    <h4 class="page-title">Llista de comandes</h4>
+                    <div class="ml-auto text-right">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Inici</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Productes</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md">
+                    <div class="card">
+                        <div class="card-body clearfix">
+                                <h4 class="card-title float-left">Productes</h4>
+                        </div>
+                        {% include './include/product_container.html' %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+{% endblock %}
+
+{% block extra_js %}
+
+    $('#product_container').on("click", 'a.dropdown-item', function() {
+
+        let product_id = $(this).closest(".jquery-btn-status").data("index");
+        let new_status = $(this).data('value')
+
+        request = {
+            product_id: product_id,
+            status: new_status,
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', getCookie("csrftoken"));
+            }
+        });
+
+        $.ajax({
+            url: "{% url 'change_product_status' %}",
+            type: "POST",
+            dataType: 'json',
+            data: {data: JSON.stringify(request)},
+
+            success: function(data) {
+                console.log("success")
+                $('#product_container').html(data.products)
+            },
+
+            error: function(xhr,errmsg,err) {
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+
+    });
+
+{% endblock %}
