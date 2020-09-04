@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div id="status_container">
+        {% include './include/order_status_container.html' %}
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{% static 'dist/css/order_status.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+
+    function autoloader(){
+        $.ajax({
+               url: "{% url 'ajax_order_status' %}" + "?slug={{ object.slug }}",
+               type: "GET",
+               dataType: 'json',
+               success: function(data) {
+                   console.log("success")
+                   $('#status_container').html(data.object)
+               },
+
+               error: function(xhr,errmsg,err) {
+                    console.log(xhr.status + ": " + errmsg); // provide a bit more info about the error to the console
+                }
+           });
+    }
+    autoloader();
+    setInterval(function (){
+        autoloader()
+    }, 5000)
+
+{% endblock %}

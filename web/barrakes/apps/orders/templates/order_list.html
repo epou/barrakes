@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% load static %}
+
+{% block content %}
+        <div class="page-breadcrumb">
+            <div class="row">
+                <div class="col d-flex no-block align-items-center">
+                    <h4 class="page-title">Llista de comandes</h4>
+                    <div class="ml-auto text-right">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Inici</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Commandes</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md">
+                    <div class="card">
+                        <div class="card-body clearfix">
+                                <h4 class="card-title float-left">Comandes</h4>
+                                <a href="{% url 'order_add' %}" class="btn btn-primary btn-rounded float-right text-white">Nova comanda &nbsp; <i class="fas fa-plus"></i></a>
+                        </div>
+                        {% include './include/order_container.html' %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+{% endblock %}
+
+{% block extra_js %}
+
+    {% include './include/order_container.js' with only_pending='false' inverse_order='false' %}
+{% endblock %}
