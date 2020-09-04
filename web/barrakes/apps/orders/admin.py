@@ -3,8 +3,6 @@ from django.contrib import admin
 from .models import Order, OrderItem
 
 # Register your models here.
-
-
 class OrderItemInlineAdmin(admin.TabularInline):
     model = OrderItem
     fields = ['product', 'quantity']
@@ -13,9 +11,8 @@ class OrderItemInlineAdmin(admin.TabularInline):
     extra = 0
 
 @admin.register(Order)
-class CategoryAdmin(admin.ModelAdmin):
-    search_fields = ['name']
-    fields = ['seat_number', ('status', 'status_changed'), 'total_price']
-    readonly_fields = ['status_changed', 'total_price']
+class OrderAdmin(admin.ModelAdmin):
+    fields = ['timestamp', 'seat_number', ('status', 'status_changed'), ('payment_method', 'payment_amount'), 'total_price']
+    readonly_fields = ['timestamp', 'status_changed', 'total_price']
 
     inlines = [OrderItemInlineAdmin]
