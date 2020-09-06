@@ -43,7 +43,7 @@
                         {% for item in product.list %}
                             <div class="row text-center text-lg-center">
                                 <div class="col-6 text-left">
-                                    <h4 id="product_name-{{ item.id }}">{{ item.name }}</h4>
+                                    <h4 id="product_name-{{ item.id }}">{% if not item.active %}<del>{{ item.name }}</del> <span class="badge badge-pill badge-danger">Esgotat</span> {% else %} {{ item.name }} {% endif %}</h4>
                                 </div>
                                 <div class="col-4 float-md-right">
                                     <h4 id="product_price-{{ item.id }}" data-value="{{ item.price }}">{{ item.price }} €</h4>
@@ -54,7 +54,7 @@
                                     </div>
                                     <input type="number" id="output-{{ item.id }}" required readonly="readonly" class="quantity_number form-control text-center" value=0>
                                     <div class="input-group-append">
-                                        <button type="button" data-index="{{ item.id }}" data-type="sum" data-inc="1" class="counter-btn btn btn-primary"><i class="fas fa-plus"></i></button>
+                                        <button type="button" {% if not item.active %}disabled="disabled"{% endif %} data-index="{{ item.id }}" data-type="sum" data-inc="1" class="counter-btn btn btn-primary"><i class="fas fa-plus"></i></button>
                                     </div>
                                 </div>
                             </div>

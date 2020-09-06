@@ -84,7 +84,7 @@ class CreateOrderView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        products = Product.objects.active()
+        products = Product.objects.all()
 
         context.update(locals())
         return context
