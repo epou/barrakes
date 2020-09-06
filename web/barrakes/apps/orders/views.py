@@ -20,51 +20,44 @@ from django.core import serializers
 import json
 from django.shortcuts import render
 
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 
-@method_decorator(staff_member_required, name='dispatch')
-class HomepageView(ListView):
-    template_name = 'index.html'
-    model = Order
-    queryset = Order.objects.all()[:10]
+@staff_member_required
+def homepage_view(request):
+    orders = Order.objects.pending()
+    num_finished_orders = Order.objects.finished().count()
+    num_pending_orders = orders.count()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    orders = OrderTable(orders)
+    order_items = OrderItemTable(OrderItem.objects.none())
 
-        orders = Order.objects.pending()
-        num_finished_orders = Order.objects.finished().count()
-        num_pending_orders = orders.count()
+    RequestConfig(request, paginate={"per_page": 25}).configure(orders)
+    RequestConfig(request).configure(order_items)
+    return render(
+        request,
+        'index.html',
+        {
+            "num_finished_orders": num_finished_orders,
+            "num_pending_orders": num_pending_orders,
+            "orders": orders,
+            "order_items": order_items
+        }
+    )
 
-        orders = OrderTable(orders)
-        order_items = OrderItemTable(OrderItem.objects.none())
+@staff_member_required
+def order_listing(request):
+    orders = OrderTable(Order.objects.all())
+    order_items = OrderItemTable(OrderItem.objects.none())
 
-        RequestConfig(self.request).configure(orders)
-        RequestConfig(self.request).configure(order_items)
-        context.update(locals())
-        return context
+    RequestConfig(request, paginate={"per_page": 25}).configure(orders)
+    RequestConfig(request).configure(order_items)
+    return render(request, "order_list.html", {"orders": orders, "order_items": order_items})
 
-
-@method_decorator(staff_member_required, name='dispatch')
-class OrderListView(ListView):
-    template_name = 'order_list.html'
-    model = Order
-    paginate_by = 50
-    queryset = Order.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        orders = OrderTable(self.object_list)
-        order_items = OrderItemTable(OrderItem.objects.none())
-
-        RequestConfig(self.request).configure(orders)
-        RequestConfig(self.request).configure(order_items)
-        context.update(locals())
-        return context
 
 class OrderStatusView(DetailView):
     template_name = 'order_status.html'
     model = Order
-    query_pk_and_slug=True
+    query_pk_and_slug = True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,27 +71,10 @@ class OrderStatusRedirectView(RedirectView):
         order = Order.objects.get(pk=pk)
         return reverse('order_status', args=[order.slug])
 
-class CreateOrderView(CreateView):
-    template_name = 'order_form.html'
-    form_class = OrderCreateForm
-    model = Order
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        products = Product.objects.all()
-
-        context.update(locals())
-        return context
-
-    def get_success_url(self):
-        self.new_object.refresh_from_db()
-        return reverse('update_order', kwargs={'pk': self.new_object.id})
-
-    def form_valid(self, form):
-        object = form.save()
-        object.refresh_from_db()
-        self.new_object = object
-        return super().form_valid(form)
+@ensure_csrf_cookie
+def create_order(request):
+    products = Product.objects.all()
+    return render(request, "order_form.html", {"products": products})
 
 @staff_member_required
 def product_listing(request):
@@ -106,7 +82,6 @@ def product_listing(request):
     RequestConfig(request, paginate={"per_page": 25}).configure(table)
     return render(request, "product_list.html", {"products": table})
 
-@csrf_exempt
 def create_new_order(request):
     if request.method == "POST":
         order = request.POST.get("order")
@@ -190,7 +165,7 @@ def order_list(request):
 
         orders = OrderTable(orders)
 
-        RequestConfig(request).configure(orders)
+        RequestConfig(request, paginate={"per_page": 25}).configure(orders)
         data = dict()
         data['orders'] = render_to_string(
             template_name='include/order_table.html',
