@@ -19,6 +19,8 @@ import datetime
 from django.core import serializers
 import json
 
+from django.views.decorators.csrf import csrf_exempt
+
 @method_decorator(staff_member_required, name='dispatch')
 class HomepageView(ListView):
     template_name = 'index.html'
@@ -112,6 +114,7 @@ class ProductListView(ListView):
         context.update(locals())
         return context
 
+@csrf_exempt
 def create_new_order(request):
     if request.method == "POST":
         order = request.POST.get("order")
