@@ -16,6 +16,13 @@
           {% include './order_items_container.html' %}
       </div>
         <div class="justify-content-start" style="padding: 10px">
+                {% if order.comment %}
+                    <hr>
+                    <div class="text-left">
+                        <h4>Comentaris</h4>
+                        <p>{{ order.comment }}</p>
+                    </div>
+                {% endif %}
                 <hr>
                 <div class="text-left">
                     <h4>Mètode de pagament</h4>

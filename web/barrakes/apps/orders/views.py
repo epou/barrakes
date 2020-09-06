@@ -123,6 +123,7 @@ def create_new_order(request):
             seat_number=order_json['seat_number'],
             payment_method=order_json['payment_method'],
             payment_amount=order_json['payment_amount'],
+            comment=order_json['comment']
         )
         for item in order_json['items']:
             OrderItem.objects.create(

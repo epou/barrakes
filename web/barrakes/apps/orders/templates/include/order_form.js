@@ -7,6 +7,7 @@ let orderList = [];
         const payment_method = $("input:radio[name='payment-method']");
         const cash_div_input_import = $("div#cash_import");
         const cash_input_import = $("input#cash_import");
+        const comment_input = $("textarea#comment")
 
         const button_send = $("#buttonSend")
 
@@ -28,6 +29,7 @@ let orderList = [];
                    seat_number: input_seat_number.val(),
                    payment_method: $("input:radio[name='payment-method']:checked").val(),
                    payment_amount: cash_input_import.val(),
+                   comment: comment_input.val(),
                    items: []
            }
            for (let i=0; i < orderList.length; i++) {
