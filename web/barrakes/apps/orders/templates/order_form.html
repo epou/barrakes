@@ -101,10 +101,13 @@
                             <div class="col-6 text-center">
                                 <input id="cash" type="radio" name="payment-method" value="cash"/>
                                 <label class="drinkcard-cc cash" for="cash"></label>
-                                <div class="input-group mb-3" id="cash_import" style="display: none">
-                                    <input id="cash_import" type="number" name="cash_import" placeholder="0.00" class="btn-block text-center form-control"/>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">€</span>
+                                <div id="cash_import" style="display: none">
+                                    <label>Amb què pagaras?</label>
+                                    <div class="input-group mb-3" >
+                                        <input id="cash_import" type="number" name="cash_import" placeholder="0.00" class="btn-block text-center form-control"/>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">€</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
