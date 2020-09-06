@@ -48,15 +48,18 @@
                                 <div class="col-4 float-md-right">
                                     <h4 id="product_price-{{ item.id }}" data-value="{{ item.price }}">{{ item.price }} €</h4>
                                 </div>
-                                <div class="col-lg-2 input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <button type="button" id="btn-substract-{{ item.id }}" disabled="disabled" data-index="{{ item.id }}" data-type="substract" data-inc="-1" class="counter-btn btn btn-primary"><i class="fas fa-minus"></i></button>
+                                {% if item.active %}
+                                    <div class="col-lg-2 input-group mb-3">
+
+                                        <div class="input-group-prepend">
+                                            <button type="button" id="btn-substract-{{ item.id }}" disabled="disabled" data-index="{{ item.id }}" data-type="substract" data-inc="-1" class="counter-btn btn btn-primary"><i class="fas fa-minus"></i></button>
+                                        </div>
+                                        <input type="number" id="output-{{ item.id }}" required readonly="readonly" class="quantity_number form-control text-center" value=0>
+                                        <div class="input-group-append">
+                                            <button type="button" data-index="{{ item.id }}" data-type="sum" data-inc="1" class="counter-btn btn btn-primary"><i class="fas fa-plus"></i></button>
+                                        </div>
                                     </div>
-                                    <input type="number" id="output-{{ item.id }}" required readonly="readonly" class="quantity_number form-control text-center" value=0>
-                                    <div class="input-group-append">
-                                        <button type="button" {% if not item.active %}disabled="disabled"{% endif %} data-index="{{ item.id }}" data-type="sum" data-inc="1" class="counter-btn btn btn-primary"><i class="fas fa-plus"></i></button>
-                                    </div>
-                                </div>
+                                {% endif %}
                             </div>
                             <hr>
                         {% endfor %}
