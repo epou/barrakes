@@ -9,13 +9,6 @@ class OrderTable(tables.Table):
         template_code='{{ record.total_price }} €',
         orderable=False
     )
-    #action = tables.TemplateColumn(
-    #    template_code='''
-    #    <button type="button" class="btn btn-info btn-sm" title="Editar"><i class="fa fa-edit"></i></button>
-    #    ''',
-    #    orderable=False,
-    #    verbose_name='Acció'
-    #)
     status = tables.TemplateColumn(
         template_code='''
         <div class="jquery-btn-status btn-group" data-index='{{ record.id }}'>
@@ -137,6 +130,6 @@ class OrderItemTable(tables.Table):
 
     class Meta:
         model = OrderItem
-        template_name = 'django_tables2/bootstrap.html'
+        template_name = 'django_tables2/bootstrap4.html'
         fields = ['quantity', 'product', 'total_price']
         orderable = False
