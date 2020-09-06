@@ -125,7 +125,7 @@ class ProductTable(tables.Table):
 
     class Meta:
         model = Product
-        template_name = 'django_tables2/bootstrap.html'
+        template_name = 'django_tables2/bootstrap4.html'
         fields = ['name', 'category', 'status', 'price']
 
 

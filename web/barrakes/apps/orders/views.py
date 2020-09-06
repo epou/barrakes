@@ -18,6 +18,7 @@ from django.forms.models import model_to_dict
 import datetime
 from django.core import serializers
 import json
+from django.shortcuts import render
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -99,20 +100,11 @@ class CreateOrderView(CreateView):
         self.new_object = object
         return super().form_valid(form)
 
-@method_decorator(staff_member_required, name='dispatch')
-class ProductListView(ListView):
-    template_name = 'product_list.html'
-    model = Product
-    paginate_by = 50
-    queryset = Product.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        products = ProductTable(self.object_list)
-
-        RequestConfig(self.request).configure(products)
-        context.update(locals())
-        return context
+@staff_member_required
+def product_listing(request):
+    table = ProductTable(Product.objects.all())
+    RequestConfig(request, paginate={"per_page": 25}).configure(table)
+    return render(request, "product_list.html", {"products": table})
 
 @csrf_exempt
 def create_new_order(request):

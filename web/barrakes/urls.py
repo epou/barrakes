@@ -17,8 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth.views import LogoutView
 
-from .apps.orders.views import HomepageView, OrderListView, CreateOrderView, OrderStatusView, OrderStatusRedirectView, ProductListView
-from .apps.orders.views import create_new_order, change_order_status, order_list, order_status, change_product_status, order_items_list
+from .apps.orders.views import HomepageView, OrderListView, CreateOrderView, OrderStatusView, OrderStatusRedirectView
+from .apps.orders.views import create_new_order, change_order_status, order_list, order_status, change_product_status, order_items_list, product_listing
 from django.views.generic.base import RedirectView
 from django.urls import reverse_lazy
 
@@ -31,7 +31,7 @@ urlpatterns = [
     path('orders/add/', CreateOrderView.as_view(), name='order_add'),
     path('orders/<int:pk>/status/', OrderStatusRedirectView.as_view(), name='order_status_pk'),
     path('orders/<slug:slug>/status/', OrderStatusView.as_view(), name='order_status'),
-    path('products/', ProductListView.as_view(), name='product_list'),
+    path('products/', product_listing, name='product_list'),
     path('ajax/orders/add/', create_new_order, name='ajax_new_order'),
     path('ajax/change_order_status/', change_order_status, name='change_order_status'),
     path('ajax/order_list', order_list, name='ajax_order_list'),
