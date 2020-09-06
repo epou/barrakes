@@ -14,7 +14,7 @@ services:
   web:
     container_name: web
     build: ./web
-    command: gunicorn barrakes.wsgi:application --bind 0.0.0.0:8000 --workers=4
+    command: gunicorn barrakes.wsgi:application --bind 0.0.0.0:8000 --workers=3
     restart: always
     env_file:
       - .env
