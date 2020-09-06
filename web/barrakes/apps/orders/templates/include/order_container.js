@@ -93,7 +93,6 @@
                 }
            });
     }
-    autoloader();
     setInterval(function (){
         if (document.hidden === false) {
             autoloader();
