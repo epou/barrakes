@@ -19,18 +19,19 @@
             </div>
         </div>
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md">
                     <div class="card">
-                        <div class="card-body clearfix">
-                                <h4 class="card-title float-left">Comandes</h4>
-                                <a href="{% url 'order_add' %}" class="btn btn-primary btn-rounded float-right text-white">Nova comanda &nbsp; <i class="fas fa-plus"></i></a>
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h4 class="card-title">Comandes</h4>
+                                </div>
+                                <div class="col-sm-6">
+                                    <a href="{% url 'order_add' %}" class="btn btn-primary btn-rounded float-right text-white">Nova comanda &nbsp; <i class="fas fa-plus"></i></a>
+                                </div>
+                            </div>
                         </div>
                         {% include './include/order_container.html' %}
                     </div>
-                </div>
-
-            </div>
         </div>
 {% endblock %}
 
