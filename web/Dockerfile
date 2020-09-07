@@ -12,6 +12,8 @@ WORKDIR /usr/src/app
 
 # install psycopg2 dependencies
 RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+# install dependencies for pycups
+RUN apk add libcups2-dev
 
 # lint
 RUN pip install --upgrade pip && pip install flake8
