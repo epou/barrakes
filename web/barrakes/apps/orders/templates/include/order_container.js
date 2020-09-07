@@ -77,8 +77,14 @@
     });
 
     function autoloader(){
+        let current_search = window.location.search.split("?")[1]
+        let query_parameters = [
+            'return_only_pending='+only_pending,
+            'return_inverse_order='+inverse_order,
+            current_search
+        ]
         $.ajax({
-               url: "{% url 'ajax_order_list' %}" + '?return_only_pending=' + only_pending + '&return_inverse_order=' + inverse_order,
+               url: "{% url 'ajax_order_list' %}" + '?' + query_parameters.join("&"),
                type: "GET",
                dataType: 'json',
                success: function(data) {
