@@ -115,3 +115,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 CURRENCY = '€'
+
+PRINTER_NAME = get_env_variable("PRINTER_NAME")

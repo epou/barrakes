@@ -1,4 +1,5 @@
 from django.template.loader import get_template
+from django.conf import settings
 
 from tempfile import NamedTemporaryFile
 from tempfile import gettempdir
@@ -13,7 +14,7 @@ from threading import Thread
 
 from .models import Order
 
-def print_file(file, title, printer_name="receipt_ticket_therman_printer_raspberrypi"):
+def print_file(file, title, printer_name=settings.PRINTER_NAME):
     conn = cups.Connection()
     conn.printFile(printer=printer_name, filename=file, title=title, options={})
 
