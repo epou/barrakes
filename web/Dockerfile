@@ -44,7 +44,7 @@ RUN apt-get update &&  apt-get install -y cups gcc libcups2-dev
 WORKDIR $APP_HOME
 
 # install dependencies
-#RUN apt-get update && apk add libpq
+RUN apt-get install -y netcat
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache /wheels/*
