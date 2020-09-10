@@ -61,7 +61,7 @@ COPY . $APP_HOME
 RUN chown -R app:app $APP_HOME
 
 # change to the app user
-USER app
+#USER app
 
 # run entrypoint.prod.sh
 ENTRYPOINT ["/opt/app/entrypoint.sh"]
