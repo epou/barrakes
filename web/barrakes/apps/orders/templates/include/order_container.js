@@ -2,6 +2,36 @@
     let only_pending = {% if only_pending == 'true' %}true{% else %}false{% endif %}
     let inverse_order = {% if inverse_order == 'true' %}true{% else %}false{% endif %}
 
+    function print_order(order_id) {
+        
+        // Stop propagation to avoid show the modal.
+        if (!e) var e = window.event;
+           e.cancelBubble = true;
+        if (e.stopPropagation) e.stopPropagation();
+
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', getCookie("csrftoken"));
+            }
+        });
+
+        $.ajax({
+            url: "{% url 'print_receipt' %}",
+            type: "POST",
+            dataType: 'json',
+            data: {order_id: order_id},
+
+            success: function(data) {
+                console.log("success print")
+
+            },
+
+            error: function(xhr,errmsg,err) {
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    }
+
     $('#order_container').on("click", 'a.dropdown-item', function(e) {
 
             // Stop propagation to avoid show the modal.

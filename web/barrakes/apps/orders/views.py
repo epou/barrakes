@@ -19,6 +19,7 @@ import datetime
 from django.core import serializers
 import json
 from django.shortcuts import render
+from .tasks import print_receipt_task
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 
@@ -98,6 +99,9 @@ def create_new_order(request):
                 quantity=item['quantity'],
                 order=order
             )
+
+        print_receipt_task(order_id=order.id)
+
         data = {}
         if request.user.is_anonymous:
             data['href'] = reverse('order_status', kwargs={'slug': order.slug})
@@ -252,5 +256,20 @@ def change_product_status(request):
         )
         return JsonResponse(data)
 
+    else:
+        return HttpResponse(status=404)
+
+@staff_member_required
+def receipt(request, pk):
+    order = get_object_or_404(Order, id=pk)
+    order_items = order.items.select_related('product')
+    return render(request, 'receipt.html', {'order': order, 'items': order_items})
+
+@staff_member_required
+def print_receipt(request):
+    if request.method == "POST":
+        order_id = request.POST.get("order_id")
+        print_receipt_task(int(order_id))
+        return HttpResponse()
     else:
         return HttpResponse(status=404)
