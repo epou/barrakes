@@ -211,6 +211,7 @@ by the thermal printer in our bar.
 * use settings.CURRENCY for all templates.
 * frontend in multiple languages
 * set name of the app using environment variables.
+* download static files using CDN instead of having them inside the repository.
 
 ## References
 
