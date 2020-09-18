@@ -103,12 +103,14 @@
                     <!-- Right side toggle and nav items -->
                     <!-- ============================================================== -->
                     {% if not user.is_anonymous %}
-                        <p class="text-white">{{ user }}</p>
                         <ul class="navbar-nav float-right">
                             <!-- User profile and search -->
                             <!-- ============================================================== -->
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{% static 'assets/images/users/1.jpg' %}" alt="user" class="rounded-circle" width="31"></a>
+                                <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ user }}
+                                    <img src="{% static 'assets/images/users/1.jpg' %}" alt="user" class="rounded-circle" width="31">
+                                </a>
                                 <div class="dropdown-menu dropdown-menu-right user-dd animated">
                                     <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
                                 </div>

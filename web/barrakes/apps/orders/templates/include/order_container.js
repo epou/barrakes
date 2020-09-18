@@ -2,6 +2,36 @@
     let only_pending = {% if only_pending == 'true' %}true{% else %}false{% endif %}
     let inverse_order = {% if inverse_order == 'true' %}true{% else %}false{% endif %}
 
+    function print_order(order_id) {
+        
+        // Stop propagation to avoid show the modal.
+        if (!e) var e = window.event;
+           e.cancelBubble = true;
+        if (e.stopPropagation) e.stopPropagation();
+
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', getCookie("csrftoken"));
+            }
+        });
+
+        $.ajax({
+            url: "{% url 'print_receipt' %}",
+            type: "POST",
+            dataType: 'json',
+            data: {order_id: order_id},
+
+            success: function(data) {
+                console.log("success print")
+
+            },
+
+            error: function(xhr,errmsg,err) {
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    }
+
     $('#order_container').on("click", 'a.dropdown-item', function(e) {
 
             // Stop propagation to avoid show the modal.
@@ -77,8 +107,14 @@
     });
 
     function autoloader(){
+        let current_search = window.location.search.split("?")[1]
+        let query_parameters = [
+            'return_only_pending='+only_pending,
+            'return_inverse_order='+inverse_order,
+            current_search
+        ]
         $.ajax({
-               url: "{% url 'ajax_order_list' %}" + '?return_only_pending=' + only_pending + '&return_inverse_order=' + inverse_order,
+               url: "{% url 'ajax_order_list' %}" + '?' + query_parameters.join("&"),
                type: "GET",
                dataType: 'json',
                success: function(data) {
@@ -93,7 +129,8 @@
                 }
            });
     }
-    autoloader();
     setInterval(function (){
-        autoloader()
+        if (document.hidden === false) {
+            autoloader();
+        }
     }, 10000)

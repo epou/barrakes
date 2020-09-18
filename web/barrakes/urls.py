@@ -17,27 +17,29 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth.views import LogoutView
 
-from .apps.orders.views import HomepageView, OrderListView, CreateOrderView, OrderStatusView, OrderStatusRedirectView, ProductListView
-from .apps.orders.views import create_new_order, change_order_status, order_list, order_status, change_product_status, order_items_list
+from .apps.orders.views import OrderStatusView, OrderStatusRedirectView
+from .apps.orders.views import create_new_order, change_order_status, order_list, order_status, change_product_status, order_items_list, product_listing, order_listing, homepage_view, create_order, receipt, print_receipt
 from django.views.generic.base import RedirectView
 from django.urls import reverse_lazy
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('dashboard/', HomepageView.as_view(), name='homepage'),
-    path('orders/', OrderListView.as_view(), name='order_list'),
+    path('dashboard/', homepage_view, name='homepage'),
+    path('orders/', order_listing, name='order_list'),
     path('', RedirectView.as_view(url=reverse_lazy('order_add'), permanent=True)),
-    path('orders/add/', CreateOrderView.as_view(), name='order_add'),
+    path('orders/add/', create_order, name='order_add'),
     path('orders/<int:pk>/status/', OrderStatusRedirectView.as_view(), name='order_status_pk'),
     path('orders/<slug:slug>/status/', OrderStatusView.as_view(), name='order_status'),
-    path('products/', ProductListView.as_view(), name='product_list'),
+    path('orders/<int:pk>/receipt/', receipt, name='order_receipt'),
+    path('products/', product_listing, name='product_list'),
     path('ajax/orders/add/', create_new_order, name='ajax_new_order'),
     path('ajax/change_order_status/', change_order_status, name='change_order_status'),
     path('ajax/order_list', order_list, name='ajax_order_list'),
     path('ajax/orders/status/', order_status, name='ajax_order_status'),
     path('ajax/change_product_status/', change_product_status, name='change_product_status'),
-    path('ajax/order_items/', order_items_list, name='ajax_order_items')
+    path('ajax/order_items/', order_items_list, name='ajax_order_items'),
+    path('ajax/order/print', print_receipt, name='print_receipt')
 
 ]
 

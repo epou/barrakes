@@ -1,7 +1,7 @@
 {% load static %}
 {% load template_extra %}
 
-<div class="container-fluid row">
+<div class="container-fluid">
         <div class="container px-1 px-md-4 py-5 mx-auto">
             <div class="card">
                 <div class="row d-flex justify-content-between px-3 top">
@@ -9,8 +9,8 @@
                         <h5>Comanda <span class="text-primary font-weight-bold">#{{ object.id }}</span></h5>
                         <h6>Cadira: <span>{{ object.seat_number }}</span></h6>
                     </div>
-                    <div class="d-flex flex-column text-sm-right">
-                        <p class="mb-0">Preu: <span class="font-weight-bold">{{ object.total_price }} €</span></p>
+                    <div class="d-flex flex-column text-right">
+                        <p>Preu: <span class="font-weight-bold">{{ object.total_price }} €</span></p>
                         <p>Mètode de pagament:
                             <span>
                                 {% if object.payment_method == object.PAYMENT_CASH %}
@@ -34,26 +34,22 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="row justify-content-between top">
-                            <div class="row d-flex icon-content"> <img class="icon" src="{% static 'dist/css/icons/oktoberfest.png' %}">
-                                <div class="d-flex flex-column">
-                                    <p class="font-weight-bold">Comanda<br>rebuda</p>
-                                </div>
+                        <div class="row justify-content-center text-center">
+                            <div class="col-3">
+                                <img class="icon" src="{% static 'dist/css/icons/oktoberfest.png' %}">
+                                <p class="font-weight-bold">Comanda<br>rebuda</p>
                             </div>
-                            <div class="row d-flex icon-content"> <img class="icon" src="{% static 'dist/css/icons/serving_beer.png' %}">
-                                <div class="d-flex flex-column">
-                                    <p class="font-weight-bold">Comanda<br>en procés</p>
-                                </div>
+                            <div class="col-3">
+                                <img class="icon" src="{% static 'dist/css/icons/serving_beer.png' %}">
+                                <p class="font-weight-bold">Comanda<br>en procés</p>
                             </div>
-                            <div class="row d-flex icon-content"> <img class="icon" src="{% static 'dist/css/icons/empty_table.png' %}">
-                                <div class="d-flex flex-column">
-                                    <p class="font-weight-bold">Comanda<br>en ruta</p>
-                                </div>
+                            <div class="col-3">
+                                <img class="icon" src="{% static 'dist/css/icons/empty_table.png' %}">
+                                <p class="font-weight-bold">Comanda<br>en ruta</p>
                             </div>
-                            <div class="row d-flex icon-content"> <img class="icon" src="{% static 'dist/css/icons/beer.png' %}">
-                                <div class="d-flex flex-column">
-                                    <p class="font-weight-bold">Comanda<br>finalitzada</p>
-                                </div>
+                            <div class="col-3">
+                                <img class="icon" src="{% static 'dist/css/icons/beer.png' %}">
+                                <p class="font-weight-bold">Comanda<br>finalitzada</p>
                             </div>
                         </div>
                     {% else %}

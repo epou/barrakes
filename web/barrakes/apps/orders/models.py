@@ -75,6 +75,7 @@ class Order(StatusModel):
     payment_method = models.CharField(max_length=16, choices=PAYMENT_OPTIONS, default=PAYMENT_CARD, verbose_name='Pagament')
     # Attributes - Optional
     payment_amount = models.DecimalField(decimal_places=2, max_digits=20, null=True, default=None)
+    comment = models.TextField(null=True, blank=True)
     # Object Manager
     objects = OrderManager()
 

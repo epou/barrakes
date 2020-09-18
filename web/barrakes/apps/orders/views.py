@@ -18,50 +18,47 @@ from django.forms.models import model_to_dict
 import datetime
 from django.core import serializers
 import json
+from django.shortcuts import render
+from .tasks import print_receipt_task
 
-@method_decorator(staff_member_required, name='dispatch')
-class HomepageView(ListView):
-    template_name = 'index.html'
-    model = Order
-    queryset = Order.objects.all()[:10]
+from django.views.decorators.csrf import ensure_csrf_cookie
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+@staff_member_required
+def homepage_view(request):
+    orders = Order.objects.pending()
+    num_finished_orders = Order.objects.finished().count()
+    num_pending_orders = orders.count()
 
-        orders = Order.objects.pending()
-        num_finished_orders = Order.objects.finished().count()
-        num_pending_orders = orders.count()
+    orders = OrderTable(orders)
+    order_items = OrderItemTable(OrderItem.objects.none())
 
-        orders = OrderTable(orders)
-        order_items = OrderItemTable(OrderItem.objects.none())
+    RequestConfig(request, paginate={"per_page": 25}).configure(orders)
+    RequestConfig(request).configure(order_items)
+    return render(
+        request,
+        'index.html',
+        {
+            "num_finished_orders": num_finished_orders,
+            "num_pending_orders": num_pending_orders,
+            "orders": orders,
+            "order_items": order_items
+        }
+    )
 
-        RequestConfig(self.request).configure(orders)
-        RequestConfig(self.request).configure(order_items)
-        context.update(locals())
-        return context
+@staff_member_required
+def order_listing(request):
+    orders = OrderTable(Order.objects.all())
+    order_items = OrderItemTable(OrderItem.objects.none())
 
+    RequestConfig(request, paginate={"per_page": 25}).configure(orders)
+    RequestConfig(request).configure(order_items)
+    return render(request, "order_list.html", {"orders": orders, "order_items": order_items})
 
-@method_decorator(staff_member_required, name='dispatch')
-class OrderListView(ListView):
-    template_name = 'order_list.html'
-    model = Order
-    paginate_by = 50
-    queryset = Order.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        orders = OrderTable(self.object_list)
-        order_items = OrderItemTable(OrderItem.objects.none())
-
-        RequestConfig(self.request).configure(orders)
-        RequestConfig(self.request).configure(order_items)
-        context.update(locals())
-        return context
 
 class OrderStatusView(DetailView):
     template_name = 'order_status.html'
     model = Order
-    query_pk_and_slug=True
+    query_pk_and_slug = True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -75,42 +72,16 @@ class OrderStatusRedirectView(RedirectView):
         order = Order.objects.get(pk=pk)
         return reverse('order_status', args=[order.slug])
 
-class CreateOrderView(CreateView):
-    template_name = 'order_form.html'
-    form_class = OrderCreateForm
-    model = Order
+@ensure_csrf_cookie
+def create_order(request):
+    products = Product.objects.all()
+    return render(request, "order_form.html", {"products": products})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        products = Product.objects.active()
-
-        context.update(locals())
-        return context
-
-    def get_success_url(self):
-        self.new_object.refresh_from_db()
-        return reverse('update_order', kwargs={'pk': self.new_object.id})
-
-    def form_valid(self, form):
-        object = form.save()
-        object.refresh_from_db()
-        self.new_object = object
-        return super().form_valid(form)
-
-@method_decorator(staff_member_required, name='dispatch')
-class ProductListView(ListView):
-    template_name = 'product_list.html'
-    model = Product
-    paginate_by = 50
-    queryset = Product.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        products = ProductTable(self.object_list)
-
-        RequestConfig(self.request).configure(products)
-        context.update(locals())
-        return context
+@staff_member_required
+def product_listing(request):
+    table = ProductTable(Product.objects.all())
+    RequestConfig(request, paginate={"per_page": 25}).configure(table)
+    return render(request, "product_list.html", {"products": table})
 
 def create_new_order(request):
     if request.method == "POST":
@@ -120,6 +91,7 @@ def create_new_order(request):
             seat_number=order_json['seat_number'],
             payment_method=order_json['payment_method'],
             payment_amount=order_json['payment_amount'],
+            comment=order_json['comment']
         )
         for item in order_json['items']:
             OrderItem.objects.create(
@@ -127,6 +99,9 @@ def create_new_order(request):
                 quantity=item['quantity'],
                 order=order
             )
+
+        print_receipt_task(order_id=order.id)
+
         data = {}
         if request.user.is_anonymous:
             data['href'] = reverse('order_status', kwargs={'slug': order.slug})
@@ -194,7 +169,7 @@ def order_list(request):
 
         orders = OrderTable(orders)
 
-        RequestConfig(request).configure(orders)
+        RequestConfig(request, paginate={"per_page": 25}).configure(orders)
         data = dict()
         data['orders'] = render_to_string(
             template_name='include/order_table.html',
@@ -281,5 +256,20 @@ def change_product_status(request):
         )
         return JsonResponse(data)
 
+    else:
+        return HttpResponse(status=404)
+
+@staff_member_required
+def receipt(request, pk):
+    order = get_object_or_404(Order, id=pk)
+    order_items = order.items.select_related('product')
+    return render(request, 'receipt.html', {'order': order, 'items': order_items})
+
+@staff_member_required
+def print_receipt(request):
+    if request.method == "POST":
+        order_id = request.POST.get("order_id")
+        print_receipt_task(int(order_id))
+        return HttpResponse()
     else:
         return HttpResponse(status=404)

@@ -9,13 +9,13 @@ class OrderTable(tables.Table):
         template_code='{{ record.total_price }} €',
         orderable=False
     )
-    #action = tables.TemplateColumn(
-    #    template_code='''
-    #    <button type="button" class="btn btn-info btn-sm" title="Editar"><i class="fa fa-edit"></i></button>
-    #    ''',
-    #    orderable=False,
-    #    verbose_name='Acció'
-    #)
+    action = tables.TemplateColumn(
+        template_code='''
+        <button onclick=print_order({{ record.id }}) type="button" class="print_button btn btn-info" title="Imprimir"><i class="mdi mdi-printer"></i></button>
+        ''',
+        orderable=False,
+        verbose_name='Imprimir'
+    )
     status = tables.TemplateColumn(
         template_code='''
         <div class="jquery-btn-status btn-group" data-index='{{ record.id }}'>
@@ -85,7 +85,7 @@ class OrderTable(tables.Table):
     class Meta:
         model = Order
         template_name = './new_table.html'
-        fields = ['id', 'timestamp', 'seat_number', 'status', 'payment_method', 'total_price', 'payment_change']
+        fields = ['id', 'timestamp', 'seat_number', 'status', 'payment_method', 'total_price', 'payment_change', 'action']
         attrs = {'class': 'table table-hover'}
         row_attrs = {'data-target': '#modal_aside_left', 'data-toggle': 'modal'}
 
@@ -125,7 +125,7 @@ class ProductTable(tables.Table):
 
     class Meta:
         model = Product
-        template_name = 'django_tables2/bootstrap.html'
+        template_name = 'django_tables2/bootstrap4.html'
         fields = ['name', 'category', 'status', 'price']
 
 
@@ -137,6 +137,6 @@ class OrderItemTable(tables.Table):
 
     class Meta:
         model = OrderItem
-        template_name = 'django_tables2/bootstrap.html'
+        template_name = 'django_tables2/bootstrap4.html'
         fields = ['quantity', 'product', 'total_price']
         orderable = False

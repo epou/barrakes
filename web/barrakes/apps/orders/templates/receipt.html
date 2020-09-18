@@ -1,0 +1,101 @@
+<style>
+
+    * {
+        font-size: 50px;
+        font-family: 'Times New Roman';
+    }
+
+    td,
+    th,
+    tr,
+    table {
+        border-top: 1px solid black;
+        border-collapse: collapse;
+    }
+
+
+    td.description,
+    th.description {
+        width: 50%;
+    }
+
+    td.quantity,
+    th.quantity {
+        width: 25%;
+        word-break: break-all;
+    }
+
+    td.price,
+    th.price {
+        width: 25%;
+        word-break: break-all;
+    }
+
+    .centered {
+        text-align: center;
+        align-content: center;
+    }
+
+    .ticket {
+        width: 100%;
+    }
+
+</style>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="UTF-8">
+
+<div class="ticket">
+    <p class="centered">
+        <br>
+        <br>
+        DIABLERRAKA
+        <br>
+        <br>
+        Comanda #{{ order.id }}
+        <br>
+        Número cadira: {{ order.seat_number }}
+    </p>
+    <table width="100%">
+        <thead>
+            <tr>
+                <th class="quantity">Q.</th>
+                <th class="description">Descripció</th>
+                <th class="price">€</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td class="quantity centered">{{ item.quantity }}</td>
+                <td class="description">{{ item.product.name }}</td>
+                <td class="price centered">{{ item.total_price }} €</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td class="quantity"></td>
+                <td class="description" style="text-align: right; font-weight:bold">TOTAL</td>
+                <td class="price centered" style="font-weight:bold">{{ order.total_price }} €</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if order.comment %}
+    <h5>Comentari: <br>{{ order.comment }}</h5>
+    {% endif %}
+
+    <p class="centered">
+        Mètode pagament: <span style="font-weight:bold">
+            {% if order.payment_method == order.PAYMENT_CARD %}Targeta{% elif order.payment_method == order.PAYMENT_CASH %}Efectiu{% endif %}
+        </span>
+        <br>
+        {% if order.payment_method == order.PAYMENT_CASH %}
+            Import rebut: <span style="font-weight:bold">{{ order.payment_amount }} €</span>
+            <br>
+            Canvi: <span style="font-weight:bold">{{ order.payment_change }} €</span>
+        {% endif %}
+    </p>
+
+    <p class="centered">Salut, foc i birra!</p>
+    <hr>
+</div>
